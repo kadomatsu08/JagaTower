@@ -13,23 +13,41 @@ public class FpsController : MonoBehaviour
 
     [SerializeField]
     [Range(0, 100)]
-    private float moveSpeed = 3.0f;
+    private float walkSpeed = 3.0f;
 
+    [SerializeField]
+    [Range(0, 100)]
+    private float runSpeed = 6.0f;
+    
     [SerializeField]
     [Range(0, 100)]
     private float jumpPower = 3.0f;
 
     private Vector3 _moveDirection;
-
+    private bool    _isGrounded;
+    private float   _currentSpeedCoefficient;
     private void Update()
     {
-        var horizontal = Input.GetAxis("Horizontal") * moveSpeed;
-        var vertical = Input.GetAxis("Vertical") * moveSpeed;
+        // 走っていたら速度を変更する
+        if (Input.GetButton("Run"))
+        {
+            _currentSpeedCoefficient = runSpeed;
+        }
+        else
+        {
+            _currentSpeedCoefficient = walkSpeed;
+        }
+        
+        var horizontal = Input.GetAxis("Horizontal") * _currentSpeedCoefficient;
+        var vertical = Input.GetAxis("Vertical") * _currentSpeedCoefficient;
         
         _moveDirection.x = horizontal;
         _moveDirection.z = vertical;
 
-        if (characterController.isGrounded)
+        // 接地判定
+        _isGrounded = characterController.isGrounded;
+        
+        if (_isGrounded)
         {
             if (Input.GetButtonDown("Jump"))
             {
