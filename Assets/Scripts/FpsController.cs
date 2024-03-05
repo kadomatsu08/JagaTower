@@ -1,7 +1,6 @@
 #nullable enable
 using Unity.Mathematics;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 /// <summary>
 /// FPS視点でプレイヤーを操作するためのクラス
@@ -34,11 +33,11 @@ public class FpsController : MonoBehaviour
     [SerializeField]
     [Range(0.1f, 5f)]
     private float horizontalRotationSpeed;
-    
+
     [SerializeField]
     [Range(60f, 90f)]
     private float cameraPitchLimit = 85.0f;
-    
+
     private float _currentSpeedCoefficient;
 
     private Vector3 _forward;
@@ -75,17 +74,17 @@ public class FpsController : MonoBehaviour
 
         _forward = _thisTransform.TransformDirection(Vector3.forward);
         _right = _thisTransform.TransformDirection(Vector3.right);
-        
+
         var horizontal = Input.GetAxis("Horizontal");
         var vertical = Input.GetAxis("Vertical");
-        
+
         var vec = horizontal * _right + vertical * _forward;
         vec = vec.normalized * _currentSpeedCoefficient;
         _moveDirection.x = vec.x;
         _moveDirection.z = vec.z;
 
         // 接地判定
-        _isGrounded = characterController.isGrounded;;
+        _isGrounded = characterController.isGrounded;
 
         if (_isGrounded)
         {
@@ -102,12 +101,12 @@ public class FpsController : MonoBehaviour
         characterController.Move(_moveDirection * Time.deltaTime);
 
         #region camera rotation
-        
+
         // カメラのピッチ角度を変更する
         _rotationX += -Input.GetAxis("Mouse Y") * verticalRotationSpeed;
         _rotationX = Mathf.Clamp(_rotationX, -cameraPitchLimit, cameraPitchLimit);
         playerCamera.transform.localRotation = Quaternion.Euler(_rotationX, 0, 0);
-        
+
         // マウスの移動量に応じて体の方向を変える
         transform.rotation *= quaternion.Euler(0, Input.GetAxis("Mouse X") * horizontalRotationSpeed, 0);
 
