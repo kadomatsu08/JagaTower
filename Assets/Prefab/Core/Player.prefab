@@ -257,6 +257,7 @@ GameObject:
   - component: {fileID: 4601030322172205817}
   - component: {fileID: 1198595165643590459}
   - component: {fileID: 846277063557542109}
+  - component: {fileID: 1200316060362237542}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -327,3 +328,17 @@ MonoBehaviour:
   verticalRotationSpeed: 5
   horizontalRotationSpeed: 0.15
   cameraPitchLimit: 85
+--- !u!114 &1200316060362237542
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9079791557676958382}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 966b2783124d44d6b5c82121c9d263e2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cameraTransform: {fileID: 927578727428693038}
+  rayLength: 4
