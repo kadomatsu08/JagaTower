@@ -4,8 +4,10 @@
       "version": "https://github.com/edanoue/com.edanoue.rx.git",
       "depth": 0,
       "source": "git",
-      "dependencies": {},
-      "hash": "c9af5677ffd8f6b47c335d26bb00bdb5b5b218b7"
+      "dependencies": {
+        "org.nuget.system.runtime.compilerservices.unsafe": "6.0.0"
+      },
+      "hash": "c399f4ffd6a29e4d4385135f3806c2370bf7251b"
     },
     "com.unity.ai.navigation": {
       "version": "2.0.0",
@@ -174,6 +176,13 @@
         "com.unity.modules.jsonserialize": "1.0.0"
       },
       "url": "https://packages.unity.com"
+    },
+    "org.nuget.system.runtime.compilerservices.unsafe": {
+      "version": "6.0.0",
+      "depth": 1,
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://unitynuget-registry.azurewebsites.net"
     },
     "com.unity.modules.accessibility": {
       "version": "1.0.0",
