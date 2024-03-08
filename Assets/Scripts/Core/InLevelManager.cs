@@ -12,7 +12,7 @@ public class InLevelManager : MonoBehaviour
     /// <summary>
     /// ステージクリア時に通知するObservable
     /// </summary>
-    public IObservable<bool> OnLevelClearObservable => _onLevelClear;
+    public Observable<bool> OnLevelClearObservable => _onLevelClear;
 
     private void OnDestroy()
     {
