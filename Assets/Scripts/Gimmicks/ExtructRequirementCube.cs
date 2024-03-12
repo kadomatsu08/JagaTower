@@ -1,5 +1,8 @@
 using UnityEngine;
 
+/// <summary>
+/// 脱出のために必要なオブジェクト
+/// </summary>
 public class ExtructRequirementCube : MonoBehaviour, IInteractableObject, IExtractRequirment
 {
     [SerializeField]
