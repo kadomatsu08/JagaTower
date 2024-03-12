@@ -18,7 +18,6 @@ public class InLevelManager : MonoBehaviour
 
     private void Start()
     {
-        // new
         clearConditionManager.OnCleared
             .Subscribe(this, (_, state) => state.OnMeetRequire())
             .RegisterTo(destroyCancellationToken);

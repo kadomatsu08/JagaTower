@@ -18,7 +18,7 @@ public class ClearConditionManager : MonoBehaviour, IClearCondition
 
     private readonly Subject<int> _onNumOfDoneChangedSub = new();
 
-    // 要求の数が変わったら通知するObservable
+    // 満たした要求の数が変わったら通知するObservable
     public Observable<int> OnNumOfDoneChanged => _onNumOfDoneChangedSub;
 
     // 要求を満たしたときに通知するObservable
