@@ -1,22 +1,27 @@
-using System;
 using Edanoue.Rx;
 using UnityEngine;
 
 public class InLevelManager : MonoBehaviour
 {
+    [SerializeField]
+    private ClearConditionManager clearConditionManager;
+
     private readonly Subject<bool> _onLevelClear = new();
 
-    // TODO デバッグ用にtrueにしている
-    private readonly bool _canExtract = true;
+
+    private bool _canExtract;
 
     /// <summary>
     /// ステージクリア時に通知するObservable
     /// </summary>
     public Observable<bool> OnLevelClearObservable => _onLevelClear;
 
-    private void OnDestroy()
+    private void Start()
     {
-        _onLevelClear.Dispose();
+        // new
+        clearConditionManager.OnCleared
+            .Subscribe(this, (_, state) => state.OnMeetRequire())
+            .RegisterTo(destroyCancellationToken);
     }
 
     /// <summary>
@@ -31,6 +36,12 @@ public class InLevelManager : MonoBehaviour
         }
     }
 
+    /// クリア条件を満たしたときの処理
+    private void OnMeetRequire()
+    {
+        _canExtract = true;
+    }
+
     /// <summary>
     /// ステージクリア時の処理
     /// </summary>
@@ -38,5 +49,6 @@ public class InLevelManager : MonoBehaviour
     {
         // ステージクリア時にObserverに通知する
         _onLevelClear.OnNext(true);
+        _onLevelClear.OnCompleted();
     }
 }
