@@ -1,8 +1,9 @@
+using Edanoue.Rx;
 using UnityEngine;
 
 namespace Developments
 {
-    public class InteractableDitector : MonoBehaviour
+    public class InteractableDetector : MonoBehaviour
     {
         [SerializeField]
         private Transform cameraTransform = null!;
@@ -11,7 +12,13 @@ namespace Developments
         [Range(1, 20)]
         private float rayLength;
 
-        public bool CanInteract { get; private set; }
+        private ReactiveProperty<bool> CanInteract { get; } = new();
+        public ReadOnlyReactiveProperty<bool> CanInteractObservable => CanInteract;
+
+        private void Awake()
+        {
+            CanInteract.RegisterTo(destroyCancellationToken);
+        }
 
         // Update is called once per frame
         private void Update()
@@ -22,7 +29,7 @@ namespace Developments
             #region Debug DrawRay
 
 #if UNITY_EDITOR
-            var rayColor = CanInteract ? Color.green : Color.red;
+            var rayColor = CanInteract.Value ? Color.green : Color.red;
             Debug.DrawRay(rayStartPoint, rayDirection * rayLength, rayColor);
 #endif
 
@@ -34,7 +41,7 @@ namespace Developments
             {
                 if (hit.collider.gameObject.TryGetComponent<IInteractableObject>(out var interactableObject))
                 {
-                    CanInteract = true;
+                    CanInteract.Value = true;
                     if (Input.GetButtonDown("Fire1"))
                     {
                         interactableObject.OnInteracted();
@@ -42,12 +49,12 @@ namespace Developments
                 }
                 else
                 {
-                    CanInteract = false;
+                    CanInteract.Value = false;
                 }
             }
             else
             {
-                CanInteract = false;
+                CanInteract.Value = false;
             }
         }
     }

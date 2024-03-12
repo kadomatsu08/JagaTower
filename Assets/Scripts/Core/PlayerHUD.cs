@@ -1,5 +1,4 @@
 using Edanoue.Rx;
-using NUnit.Framework.Constraints;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,7 +9,7 @@ public class PlayerHUD : MonoBehaviour
 
     [SerializeField]
     private ClearConditionManager clearConditionManager;
-    
+
     [SerializeField]
     private Text clearText;
 
@@ -22,9 +21,9 @@ public class PlayerHUD : MonoBehaviour
         // レベルクリア時の通知を購読
         gameManager.OnLevelClearObservable
             .Take(1)
-            .Subscribe(this,(_, state) => state.OnLevelClear())
+            .Subscribe(this, (_, state) => state.OnLevelClear())
             .AddTo(_disposableOnDestroy);
-        
+
         // クリア条件の変化を購読
         clearConditionManager.OnNumOfDoneChanged
             .Subscribe(this, (num, state) => state.OnGetRequirement(num))
@@ -44,7 +43,7 @@ public class PlayerHUD : MonoBehaviour
         clearText.enabled = true;
         clearText.text = "Level Clear";
     }
-    
+
     /// <summary>
     /// 目的のものを取得したときに実行する処理
     /// </summary>

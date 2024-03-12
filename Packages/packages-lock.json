@@ -7,7 +7,7 @@
       "dependencies": {
         "org.nuget.system.runtime.compilerservices.unsafe": "6.0.0"
       },
-      "hash": "c399f4ffd6a29e4d4385135f3806c2370bf7251b"
+      "hash": "29856db30f62e123b7175f0c9b4cf9d449fc769d"
     },
     "com.unity.ai.navigation": {
       "version": "2.0.0",
