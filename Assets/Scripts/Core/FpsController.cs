@@ -1,4 +1,5 @@
 #nullable enable
+using Developments;
 using Unity.Mathematics;
 using UnityEngine;
 
@@ -10,6 +11,9 @@ public class FpsController : MonoBehaviour
 {
     [SerializeField]
     private CharacterController characterController = null!;
+
+    [SerializeField]
+    private InteractableDetector interactableDetector = null!;
 
     [SerializeField]
     [Range(0, 100)]
@@ -38,78 +42,93 @@ public class FpsController : MonoBehaviour
     [Range(60f, 90f)]
     private float cameraPitchLimit = 85.0f;
 
+    private Vector3 _cameraForward;
+    private Vector3 _cameraRight;
+
     private float _currentSpeedCoefficient;
 
-    private Vector3 _forward;
-    private bool    _isGrounded;
+    private float _horizontalAxis;
+
+    private IInteractableObject? _interactableObject;
+    private bool                 _isGrounded;
 
     private Vector3 _moveDirection;
-    private Vector3 _right;
+
 
     private float _rotationX;
 
-    private Transform _thisTransform = null!;
+    private float _verticalAxis;
 
-    private void Start()
+    private void Awake()
     {
         // カーソルの設定
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
-        // transformのキャッシュ
-        _thisTransform = transform;
+        _currentSpeedCoefficient = walkSpeed;
     }
 
     private void Update()
     {
-        // 走っていたら速度を変更する
-        if (Input.GetButton("Run"))
-        {
-            _currentSpeedCoefficient = runSpeed;
-        }
-        else
-        {
-            _currentSpeedCoefficient = walkSpeed;
-        }
-
-        _forward = _thisTransform.TransformDirection(Vector3.forward);
-        _right = _thisTransform.TransformDirection(Vector3.right);
-
-        var horizontal = Input.GetAxis("Horizontal");
-        var vertical = Input.GetAxis("Vertical");
-
-        var vec = horizontal * _right + vertical * _forward;
-        vec = vec.normalized * _currentSpeedCoefficient;
-        _moveDirection.x = vec.x;
-        _moveDirection.z = vec.z;
-
         // 接地判定
         _isGrounded = characterController.isGrounded;
 
-        if (_isGrounded)
-        {
-            if (Input.GetButtonDown("Jump"))
-            {
-                _moveDirection.y = jumpPower;
-            }
-        }
-        else
+        if (!_isGrounded)
         {
             _moveDirection.y += Physics.gravity.y * Time.deltaTime;
         }
+    }
 
-        characterController.Move(_moveDirection * Time.deltaTime);
-
-        #region camera rotation
-
+    public void CameraRotation(float valueX, float valueY)
+    {
         // カメラのピッチ角度を変更する
-        _rotationX += -Input.GetAxis("Mouse Y") * verticalRotationSpeed;
+        _rotationX += -valueY * verticalRotationSpeed;
         _rotationX = Mathf.Clamp(_rotationX, -cameraPitchLimit, cameraPitchLimit);
         playerCamera.transform.localRotation = Quaternion.Euler(_rotationX, 0, 0);
 
         // マウスの移動量に応じて体の方向を変える
-        transform.rotation *= quaternion.Euler(0, Input.GetAxis("Mouse X") * horizontalRotationSpeed, 0);
+        transform.rotation *= quaternion.Euler(0, valueX * horizontalRotationSpeed, 0);
+    }
 
-        #endregion
+    public void Jump()
+    {
+        if (_isGrounded)
+        {
+            _moveDirection.y = jumpPower;
+        }
+    }
+
+    public void Run()
+    {
+        _currentSpeedCoefficient = runSpeed;
+    }
+
+    public void Walk()
+    {
+        _currentSpeedCoefficient = walkSpeed;
+    }
+
+    public void Fire()
+    {
+        interactableDetector.DetectedInteractableObject?.OnInteracted();
+    }
+
+    // WASDキーの入力を受け取る
+    public void MoveInput(float vertical, float horizontal)
+    {
+        _verticalAxis = vertical;
+        _horizontalAxis = horizontal;
+
+        _cameraForward = playerCamera.transform.forward;
+        _cameraRight = playerCamera.transform.right;
+
+        var vec = _horizontalAxis * _cameraRight + _verticalAxis * _cameraForward;
+        vec = new Vector3(vec.x, 0, vec.z);
+        vec = vec.normalized * _currentSpeedCoefficient;
+        _moveDirection.x = vec.x;
+        _moveDirection.z = vec.z;
+
+        Debug.Log(_currentSpeedCoefficient);
+        characterController.Move(_moveDirection * Time.deltaTime);
     }
 }
