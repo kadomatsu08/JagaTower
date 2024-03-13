@@ -1,7 +1,5 @@
-using System;
 using Edanoue.Rx;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 /// <summary>
 /// 脱出のために必要なオブジェクト
@@ -21,7 +19,7 @@ public class ExtructRequirementCube : MonoBehaviour, IInteractableObject
     {
         // インタラクトしたときに通知
         _onInteractedSub.OnNext(Unit.Default);
-        
+
         Destroy(gameObject);
     }
 }

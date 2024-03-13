@@ -1,19 +1,18 @@
 using Edanoue.Rx;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class GetBoxGameRuleHUD : MonoBehaviour
 {
     [SerializeField]
     private GetBoxGameMode gameMode;
-    
+
     [SerializeField]
     private Text clearText;
 
     private readonly CompositeDisposable _disposableOnDestroy = new();
-    
-    
+
+
     // Start is called before the first frame update
     private void Awake()
     {
