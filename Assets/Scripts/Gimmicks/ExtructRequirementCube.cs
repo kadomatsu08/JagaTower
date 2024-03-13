@@ -1,21 +1,27 @@
+using System;
+using Edanoue.Rx;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 /// <summary>
 /// 脱出のために必要なオブジェクト
 /// </summary>
-public class ExtructRequirementCube : MonoBehaviour, IInteractableObject, IExtractRequirment
+public class ExtructRequirementCube : MonoBehaviour, IInteractableObject
 {
-    [SerializeField]
-    private ClearConditionManager clearConditionManager;
+    // 箱が取られたときに通知するobservable
+    private readonly Subject<Unit> _onInteractedSub = new();
+    public Observable<Unit> OnInteractedObservable => _onInteractedSub;
 
-    public void MeetRequirement()
+    private void Awake()
     {
-        clearConditionManager.CountUpDoneRequirement();
+        _onInteractedSub.RegisterTo(destroyCancellationToken);
     }
 
     public void OnInteracted()
     {
-        MeetRequirement();
+        // インタラクトしたときに通知
+        _onInteractedSub.OnNext(Unit.Default);
+        
         Destroy(gameObject);
     }
 }
