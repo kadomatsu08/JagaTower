@@ -59,6 +59,16 @@ public class FpsController : MonoBehaviour
 
     private float _verticalAxis;
 
+    /// <summary>
+    /// はしごの近くにいるかどうか
+    /// </summary>
+    public bool OnLadder { get; set; }
+    
+    /// <summary>
+    /// ジャンプボタンが押されているかどうか
+    /// </summary>
+    public bool IsJumpPressed { get; set; }
+    
     private void Awake()
     {
         // カーソルの設定
@@ -74,10 +84,9 @@ public class FpsController : MonoBehaviour
         // 接地判定
         _isGrounded = characterController.isGrounded;
 
-        if (!_isGrounded)
-        {
-            _moveDirection.y += Physics.gravity.y * Time.deltaTime;
-        }
+        // 重力の影響を計算する
+        CalcGravity();
+        
     }
 
 
@@ -90,13 +99,15 @@ public class FpsController : MonoBehaviour
 
         // 体の方向を変える
         transform.rotation *= quaternion.Euler(0, valueX * horizontalRotationSpeed * Time.deltaTime, 0);
-
-        Debug.Log($"valueX: {valueX}, valueY: {valueY}");
-        Debug.Log(-valueY * verticalRotationSpeed + " " + valueX * horizontalRotationSpeed);
     }
 
     public void Jump()
     {
+        if (OnLadder)
+        {
+            return;
+        }
+        
         if (_isGrounded)
         {
             _moveDirection.y = jumpPower;
@@ -118,7 +129,7 @@ public class FpsController : MonoBehaviour
         interactableDetector.DetectedInteractableObject?.OnInteracted();
     }
 
-    // WASDキーの入力を受け取る
+    // プレイヤーを移動させる
     public void MoveInput(float vertical, float horizontal)
     {
         _verticalAxis = vertical;
@@ -145,6 +156,21 @@ public class FpsController : MonoBehaviour
         else
         {
             Walk();
+        }
+    }
+    
+    private void CalcGravity()
+    {
+        if (OnLadder)
+        {
+            _moveDirection.y = 0;
+            return;
+        }
+        
+        // 空中にいるとき、擬似的に重力をかける
+        if (!_isGrounded)
+        {
+            _moveDirection.y += Physics.gravity.y * Time.deltaTime;
         }
     }
 }

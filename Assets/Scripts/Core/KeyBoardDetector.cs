@@ -9,6 +9,11 @@ public class KeyBoardDetector : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space))
         {
             _fpsController.Jump();
+            _fpsController.IsJumpPressed = true;
+        }
+        if (Input.GetKeyUp(KeyCode.Space))
+        {
+            _fpsController.IsJumpPressed = false;
         }
 
         if (Input.GetKeyDown(KeyCode.LeftShift))
