@@ -7,7 +7,7 @@ using UnityEngine;
 public class ExtractionArea : MonoBehaviour
 {
     [SerializeField]
-    private InLevelManager gameManager;
+    private GetBoxGameMode gameManager;
 
     private void OnTriggerEnter(Collider other)
     {

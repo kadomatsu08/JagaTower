@@ -6,7 +6,7 @@ using UnityEngine.UI;
 /// <summary>
 /// クロスヘアの表示を管理するクラス
 /// </summary>
-public class CrosshairManager : MonoBehaviour
+public class CrosshairHudAnimator : MonoBehaviour
 {
     [SerializeField]
     private Image image;
@@ -24,7 +24,7 @@ public class CrosshairManager : MonoBehaviour
     // Start is called before the first frame update
     private void Start()
     {
-        detector.CanInteractObservable
+        detector.IsDetectedInteractObservable
             .Subscribe(this, (x, state) => state.ToggleCrosshair(x))
             .RegisterTo(destroyCancellationToken);
     }

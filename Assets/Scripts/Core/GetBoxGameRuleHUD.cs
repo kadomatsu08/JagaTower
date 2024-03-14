@@ -2,31 +2,29 @@ using Edanoue.Rx;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PlayerHUD : MonoBehaviour
+public class GetBoxGameRuleHUD : MonoBehaviour
 {
     [SerializeField]
-    private InLevelManager gameManager;
-
-    [SerializeField]
-    private ClearConditionManager clearConditionManager;
+    private GetBoxGameMode gameMode;
 
     [SerializeField]
     private Text clearText;
 
     private readonly CompositeDisposable _disposableOnDestroy = new();
 
+
     // Start is called before the first frame update
-    private void Start()
+    private void Awake()
     {
         // レベルクリア時の通知を購読
-        gameManager.OnLevelClearObservable
+        gameMode.OnLevelClearObservable
             .Take(1)
             .Subscribe(this, (_, state) => state.OnLevelClear())
             .AddTo(_disposableOnDestroy);
 
-        // クリア条件の変化を購読
-        clearConditionManager.OnNumOfDoneChanged
-            .Subscribe(this, (num, state) => state.OnGetRequirement(num))
+        // 要求数、取得数が変化したときの通知を購読
+        gameMode.CurrentBoxInfo
+            .Subscribe(this, (value, state) => state.OnGetRequirement(value))
             .AddTo(_disposableOnDestroy);
     }
 
@@ -47,9 +45,17 @@ public class PlayerHUD : MonoBehaviour
     /// <summary>
     /// 目的のものを取得したときに実行する処理
     /// </summary>
-    private void OnGetRequirement(int numOfDone)
+    private void OnGetRequirement(Vector2Int value)
     {
         clearText.enabled = true;
-        clearText.text = $"Obento: {numOfDone} of {clearConditionManager.NumOfRequirements} acquired.";
+        // 取得数 <= 要求数 のとき ゴール地点に到達できるテキストを画面上に表示する
+        if (value.x >= value.y)
+        {
+            clearText.text = "You can extract.";
+        }
+        else
+        {
+            clearText.text = $"Obento: {value.x} of {value.y} acquired.";
+        }
     }
 }
