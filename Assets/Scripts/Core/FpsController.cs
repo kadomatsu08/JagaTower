@@ -68,6 +68,7 @@ public class FpsController : MonoBehaviour
         _currentSpeedCoefficient = walkSpeed;
     }
 
+
     private void Update()
     {
         // 接地判定
@@ -79,6 +80,7 @@ public class FpsController : MonoBehaviour
         }
     }
 
+
     public void CameraRotation(float valueX, float valueY)
     {
         // カメラのピッチ角度を変更する
@@ -86,8 +88,11 @@ public class FpsController : MonoBehaviour
         _rotationX = Mathf.Clamp(_rotationX, -cameraPitchLimit, cameraPitchLimit);
         playerCamera.transform.localRotation = Quaternion.Euler(_rotationX, 0, 0);
 
-        // マウスの移動量に応じて体の方向を変える
-        transform.rotation *= quaternion.Euler(0, valueX * horizontalRotationSpeed, 0);
+        // 体の方向を変える
+        transform.rotation *= quaternion.Euler(0, valueX * horizontalRotationSpeed * Time.deltaTime, 0);
+
+        Debug.Log($"valueX: {valueX}, valueY: {valueY}");
+        Debug.Log(-valueY * verticalRotationSpeed + " " + valueX * horizontalRotationSpeed);
     }
 
     public void Jump()
@@ -128,7 +133,18 @@ public class FpsController : MonoBehaviour
         _moveDirection.x = vec.x;
         _moveDirection.z = vec.z;
 
-        Debug.Log(_currentSpeedCoefficient);
         characterController.Move(_moveDirection * Time.deltaTime);
+    }
+    
+    public void ToggleRun()
+    {
+        if (_currentSpeedCoefficient == walkSpeed)
+        {
+            Run();
+        }
+        else
+        {
+            Walk();
+        }
     }
 }

@@ -327,8 +327,8 @@ MonoBehaviour:
   runSpeed: 6
   jumpPower: 3
   playerCamera: {fileID: 8485425388225319679}
-  verticalRotationSpeed: 5
-  horizontalRotationSpeed: 0.15
+  verticalRotationSpeed: 1
+  horizontalRotationSpeed: 1
   cameraPitchLimit: 85
 --- !u!114 &1200316060362237542
 MonoBehaviour:

@@ -29,5 +29,6 @@ public class KeyBoardDetector : MonoBehaviour
         _fpsController.CameraRotation(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
 
         _fpsController.MoveInput(Input.GetAxis("Vertical"), Input.GetAxis("Horizontal"));
+        
     }
 }
