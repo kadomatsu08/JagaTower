@@ -17,11 +17,11 @@ public class FpsController : MonoBehaviour
 
     [SerializeField]
     [Range(0, 100)]
-    private float walkSpeed = 3.0f;
+    private float baseWalkSpeed = 3.0f;
 
     [SerializeField]
     [Range(0, 100)]
-    private float runSpeed = 6.0f;
+    private float baseRunSpeed = 6.0f;
 
     [SerializeField]
     [Range(0, 100)]
@@ -52,13 +52,16 @@ public class FpsController : MonoBehaviour
 
     private Vector3 _cameraForward;
     private Vector3 _cameraRight;
+    private float   _currentRunSpeed;
 
-    private float _currentSpeedCoefficient;
+    private float _currentWalkSpeed;
 
     private float _horizontalAxis;
 
     private IInteractableObject? _interactableObject;
     private bool                 _isGrounded;
+
+    private bool _isRunPressed;
 
     private Vector3 _moveDirection;
 
@@ -81,7 +84,9 @@ public class FpsController : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
-        _currentSpeedCoefficient = walkSpeed;
+        // プレイヤーの速度の初期化
+        _currentWalkSpeed = baseWalkSpeed;
+        _currentRunSpeed = baseRunSpeed;
     }
 
 
@@ -122,12 +127,12 @@ public class FpsController : MonoBehaviour
 
     public void Run()
     {
-        _currentSpeedCoefficient = runSpeed;
+        _isRunPressed = true;
     }
 
     public void Walk()
     {
-        _currentSpeedCoefficient = walkSpeed;
+        _isRunPressed = false;
     }
 
     public void Fire()
@@ -146,7 +151,10 @@ public class FpsController : MonoBehaviour
 
         var vec = _horizontalAxis * _cameraRight + _verticalAxis * _cameraForward;
         vec = new Vector3(vec.x, 0, vec.z);
-        vec = vec.normalized * _currentSpeedCoefficient;
+
+        var speed = _isRunPressed ? _currentRunSpeed : _currentWalkSpeed;
+
+        vec = vec.normalized * speed;
         _moveDirection.x = vec.x;
         _moveDirection.z = vec.z;
 
@@ -155,14 +163,7 @@ public class FpsController : MonoBehaviour
 
     public void ToggleRun()
     {
-        if (_currentSpeedCoefficient == walkSpeed)
-        {
-            Run();
-        }
-        else
-        {
-            Walk();
-        }
+        _isRunPressed = !_isRunPressed;
     }
 
     private void CalcYAxisMovement()
@@ -189,5 +190,24 @@ public class FpsController : MonoBehaviour
         {
             _moveDirection.y += Physics.gravity.y * Time.deltaTime;
         }
+    }
+
+    /// <summary>
+    /// 現在の歩き速度、走り速度を上げる
+    /// </summary>
+    /// <param name="speedUpValue"></param>
+    public void AddSpeed(float speedUpValue)
+    {
+        _currentWalkSpeed += speedUpValue;
+        _currentRunSpeed += speedUpValue;
+    }
+
+    /// <summary>
+    /// 歩き速度、走り速度をベースの速度にリセットする
+    /// </summary>
+    public void BaseSpeedReset()
+    {
+        _currentWalkSpeed = baseWalkSpeed;
+        _currentRunSpeed = baseRunSpeed;
     }
 }
