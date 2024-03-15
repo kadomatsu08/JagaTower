@@ -11,6 +11,7 @@ public class KeyBoardDetector : MonoBehaviour
             _fpsController.Jump();
             _fpsController.IsJumpPressed = true;
         }
+
         if (Input.GetKeyUp(KeyCode.Space))
         {
             _fpsController.IsJumpPressed = false;
@@ -34,6 +35,5 @@ public class KeyBoardDetector : MonoBehaviour
         _fpsController.CameraRotation(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
 
         _fpsController.MoveInput(Input.GetAxis("Vertical"), Input.GetAxis("Horizontal"));
-        
     }
 }
