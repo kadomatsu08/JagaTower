@@ -42,6 +42,14 @@ public class FpsController : MonoBehaviour
     [Range(60f, 90f)]
     private float cameraPitchLimit = 85.0f;
 
+    [SerializeField]
+    [Range(0, 10)]
+    private float onLadderClimbSpeed = 1.0f;
+
+    [SerializeField]
+    [Range(0, 10)]
+    private float onLadderFallingSpeed = 1.0f;
+
     private Vector3 _cameraForward;
     private Vector3 _cameraRight;
 
@@ -54,21 +62,19 @@ public class FpsController : MonoBehaviour
 
     private Vector3 _moveDirection;
 
-
     private float _rotationX;
-
     private float _verticalAxis;
 
     /// <summary>
     /// はしごの近くにいるかどうか
     /// </summary>
     public bool OnLadder { get; set; }
-    
+
     /// <summary>
     /// ジャンプボタンが押されているかどうか
     /// </summary>
     public bool IsJumpPressed { get; set; }
-    
+
     private void Awake()
     {
         // カーソルの設定
@@ -84,9 +90,8 @@ public class FpsController : MonoBehaviour
         // 接地判定
         _isGrounded = characterController.isGrounded;
 
-        // 重力の影響を計算する
-        CalcGravity();
-        
+        // 上下方向の移動量を計算する
+        CalcYAxisMovement();
     }
 
 
@@ -105,9 +110,10 @@ public class FpsController : MonoBehaviour
     {
         if (OnLadder)
         {
+            _moveDirection.y = onLadderClimbSpeed;
             return;
         }
-        
+
         if (_isGrounded)
         {
             _moveDirection.y = jumpPower;
@@ -146,7 +152,7 @@ public class FpsController : MonoBehaviour
 
         characterController.Move(_moveDirection * Time.deltaTime);
     }
-    
+
     public void ToggleRun()
     {
         if (_currentSpeedCoefficient == walkSpeed)
@@ -158,15 +164,26 @@ public class FpsController : MonoBehaviour
             Walk();
         }
     }
-    
-    private void CalcGravity()
+
+    private void CalcYAxisMovement()
     {
         if (OnLadder)
         {
-            _moveDirection.y = 0;
+            if (IsJumpPressed)
+            {
+                // 一定速度で上昇する
+                _moveDirection.y = onLadderClimbSpeed;
+            }
+            else
+            {
+                // はしごの近くにいるときは、一定速度で落下する
+                // 下方向への移動なので、マイナスをかける
+                _moveDirection.y = -onLadderFallingSpeed;
+            }
+
             return;
         }
-        
+
         // 空中にいるとき、擬似的に重力をかける
         if (!_isGrounded)
         {
