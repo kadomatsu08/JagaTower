@@ -42,6 +42,14 @@ public class FpsController : MonoBehaviour
     [Range(60f, 90f)]
     private float cameraPitchLimit = 85.0f;
 
+    [SerializeField]
+    [Range(0, 10)]
+    private float onLadderClimbSpeed = 1.0f;
+
+    [SerializeField]
+    [Range(0, 10)]
+    private float onLadderFallingSpeed = 1.0f;
+
     private Vector3 _cameraForward;
     private Vector3 _cameraRight;
 
@@ -54,10 +62,18 @@ public class FpsController : MonoBehaviour
 
     private Vector3 _moveDirection;
 
-
     private float _rotationX;
-
     private float _verticalAxis;
+
+    /// <summary>
+    /// はしごの近くにいるかどうか
+    /// </summary>
+    public bool OnLadder { get; set; }
+
+    /// <summary>
+    /// ジャンプボタンが押されているかどうか
+    /// </summary>
+    public bool IsJumpPressed { get; set; }
 
     private void Awake()
     {
@@ -74,10 +90,8 @@ public class FpsController : MonoBehaviour
         // 接地判定
         _isGrounded = characterController.isGrounded;
 
-        if (!_isGrounded)
-        {
-            _moveDirection.y += Physics.gravity.y * Time.deltaTime;
-        }
+        // 上下方向の移動量を計算する
+        CalcYAxisMovement();
     }
 
 
@@ -90,13 +104,16 @@ public class FpsController : MonoBehaviour
 
         // 体の方向を変える
         transform.rotation *= quaternion.Euler(0, valueX * horizontalRotationSpeed * Time.deltaTime, 0);
-
-        Debug.Log($"valueX: {valueX}, valueY: {valueY}");
-        Debug.Log(-valueY * verticalRotationSpeed + " " + valueX * horizontalRotationSpeed);
     }
 
     public void Jump()
     {
+        if (OnLadder)
+        {
+            _moveDirection.y = onLadderClimbSpeed;
+            return;
+        }
+
         if (_isGrounded)
         {
             _moveDirection.y = jumpPower;
@@ -118,7 +135,7 @@ public class FpsController : MonoBehaviour
         interactableDetector.DetectedInteractableObject?.OnInteracted();
     }
 
-    // WASDキーの入力を受け取る
+    // プレイヤーを移動させる
     public void MoveInput(float vertical, float horizontal)
     {
         _verticalAxis = vertical;
@@ -135,7 +152,7 @@ public class FpsController : MonoBehaviour
 
         characterController.Move(_moveDirection * Time.deltaTime);
     }
-    
+
     public void ToggleRun()
     {
         if (_currentSpeedCoefficient == walkSpeed)
@@ -145,6 +162,32 @@ public class FpsController : MonoBehaviour
         else
         {
             Walk();
+        }
+    }
+
+    private void CalcYAxisMovement()
+    {
+        if (OnLadder)
+        {
+            if (IsJumpPressed)
+            {
+                // 一定速度で上昇する
+                _moveDirection.y = onLadderClimbSpeed;
+            }
+            else
+            {
+                // はしごの近くにいるときは、一定速度で落下する
+                // 下方向への移動なので、マイナスをかける
+                _moveDirection.y = -onLadderFallingSpeed;
+            }
+
+            return;
+        }
+
+        // 空中にいるとき、擬似的に重力をかける
+        if (!_isGrounded)
+        {
+            _moveDirection.y += Physics.gravity.y * Time.deltaTime;
         }
     }
 }

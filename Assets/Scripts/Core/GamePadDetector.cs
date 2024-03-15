@@ -14,14 +14,20 @@ public class GamePadDetector : MonoBehaviour
     [Tooltip("カメラのY軸反転" +
              "true: 反転する" +
              "false: 反転しない")]
-    private bool yReverse = false;
-    
+    private bool yReverse;
+
     private void Update()
     {
         // ×ボタン
         if (Input.GetKeyDown(KeyCode.JoystickButton1))
         {
             _fpsController.Jump();
+            _fpsController.IsJumpPressed = true;
+        }
+
+        if (Input.GetKeyUp(KeyCode.JoystickButton1))
+        {
+            _fpsController.IsJumpPressed = false;
         }
 
         // ○ボタン
@@ -49,13 +55,13 @@ public class GamePadDetector : MonoBehaviour
         {
             inputY = 0;
         }
-        
+
         // スティックの上下の入力は、上に倒すと -1 下に倒すと 1 になる
         // UnityのInputsystemのVerticalの入力 前進時に 1 後退時に -1にスティックの入力をあわせるため
         // inputYの値にマイナスをかける
         _fpsController.MoveInput(-inputY, inputX);
         Debug.Log($"MOVEinputX: {inputX}, inputY: {inputY}");
-        
+
         // Rスティック上下左右
         var input3rd = Input.GetAxis("Axis 3rd");
         if (Math.Abs(input3rd) < deadZone)
@@ -69,14 +75,13 @@ public class GamePadDetector : MonoBehaviour
             input6th = 0;
         }
 
-        int reverse = yReverse ? -1 : 1;
+        var reverse = yReverse ? -1 : 1;
         _fpsController.CameraRotation(input3rd, input6th * reverse);
         Debug.Log($"CAMERAinput3rd: {input3rd}, input6th: {input6th}");
-        
+
         if (Input.GetKeyDown(KeyCode.LeftShift))
         {
             _fpsController.ToggleRun();
         }
-        
     }
 }
