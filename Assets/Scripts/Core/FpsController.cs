@@ -104,6 +104,7 @@ public class FpsController : MonoBehaviour
         if (other.TryGetComponent<SpeedUpItem>(out var otherSpeedUpItem))
         {
             otherSpeedUpItem.OnGotItem();
+            AddSpeed(1.0f);
         }
     }
 

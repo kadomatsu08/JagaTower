@@ -7,9 +7,6 @@ using UnityEngine;
 /// </summary>
 public class SpeedUpItem : MonoBehaviour
 {
-    [SerializeField]
-    private float speedUpValue = 1.0f;
-
     public void OnGotItem()
     {
         Destroy(gameObject);
