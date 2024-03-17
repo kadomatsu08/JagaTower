@@ -1,4 +1,5 @@
 #nullable enable
+using System;
 using Developments;
 using Unity.Mathematics;
 using UnityEngine;
@@ -209,5 +210,13 @@ public class FpsController : MonoBehaviour
     {
         _currentWalkSpeed = baseWalkSpeed;
         _currentRunSpeed = baseRunSpeed;
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.TryGetComponent<SpeedUpItem>(out var otherSpeedUpItem))
+        {
+            otherSpeedUpItem.OnGotItem();
+        }
     }
 }
