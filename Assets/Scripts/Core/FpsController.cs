@@ -1,5 +1,4 @@
 #nullable enable
-using System;
 using Developments;
 using Unity.Mathematics;
 using UnityEngine;
@@ -98,6 +97,14 @@ public class FpsController : MonoBehaviour
 
         // 上下方向の移動量を計算する
         CalcYAxisMovement();
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.TryGetComponent<SpeedUpItem>(out var otherSpeedUpItem))
+        {
+            otherSpeedUpItem.OnGotItem();
+        }
     }
 
 
@@ -210,13 +217,5 @@ public class FpsController : MonoBehaviour
     {
         _currentWalkSpeed = baseWalkSpeed;
         _currentRunSpeed = baseRunSpeed;
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.TryGetComponent<SpeedUpItem>(out var otherSpeedUpItem))
-        {
-            otherSpeedUpItem.OnGotItem();
-        }
     }
 }

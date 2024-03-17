@@ -1,7 +1,6 @@
 ﻿# nullable enable
 
 using UnityEngine;
-using UnityEngine.Serialization;
 
 /// <summary>
 /// プレイヤーが取得するとスピードアップするアイテム
