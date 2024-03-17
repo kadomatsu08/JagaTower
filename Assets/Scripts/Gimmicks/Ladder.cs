@@ -1,9 +1,7 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Ladder : MonoBehaviour
 {
-
     private void OnTriggerEnter(Collider other)
     {
         if (other.TryGetComponent<FpsController>(out var controller))

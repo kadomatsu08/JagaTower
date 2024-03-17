@@ -28,7 +28,8 @@ public class GetBoxGameMode : MonoBehaviour
         _currentBoxInfoReactiveProperty.Value
             = new Vector2Int(_currentBoxInfoReactiveProperty.Value.x + value, _currentBoxInfoReactiveProperty.Value.y);
 
-        if (_currentBoxInfoReactiveProperty.Value.x <= _currentBoxInfoReactiveProperty.Value.y)
+        // 分子 >= 分母 のときに脱出可能とする
+        if (_currentBoxInfoReactiveProperty.Value.x >= _currentBoxInfoReactiveProperty.Value.y)
         {
             _canExtract = true;
         }
